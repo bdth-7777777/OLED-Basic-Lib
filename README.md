@@ -1,6 +1,6 @@
 # **OLED Basic Lib**
 * **Q : 这是什么？**
-* **A :**  这是一个用于驱动OLED的C语言库，起源于[【 江协科技的OLED教程 】 ](https://www.bilibili.com/video/BV1EN41177Pc/?spm_id_from=333.1387.homepage.video_card.click&vd_source=1183a399479e248598095c5e770be232)，我在此基础上更改并适配了多种芯片的OLED，使用此库，您可以在您的项目当中方便地使用各种分辨率的OLED显示图片，图像，中英文混合字符串等。此外，[【 OLED UI ](https://github.com/bdth-7777777/OLED_UI)是基于此库开发的。
+* **A :**  这是一个用于驱动OLED的C语言库，起源于[【 江协科技的OLED教程 】 ](https://www.bilibili.com/video/BV1EN41177Pc/?spm_id_from=333.1387.homepage.video_card.click&vd_source=1183a399479e248598095c5e770be232)，我在此基础上更改并适配了多种芯片的OLED，使用此库，您可以在您的项目当中方便地使用各种分辨率的OLED显示图片，图像，中英文混合字符串等。此外，[ OLED UI ](https://github.com/bdth-7777777/OLED_UI)是基于此库开发的。
 ---
 * **Q : 有什么优势？**
 * **A :** **优势如下：**  
