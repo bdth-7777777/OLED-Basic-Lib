@@ -7,6 +7,334 @@
     1. **便于移植：** 可以方便地移植进各种不同单片机的项目
     2. **支持中英文混合显示：** 就是 ~~一个字~~ 两个字，美观！
     3. **占用程序空间不多：** 与著名开源项目U8g2不同，虽然功能没有U8g2多，但是不会占用更多的程序空间，性价比高。
-    4. **动态可变区域刷新屏幕：** 这算是此项目的一个特色了。您可以手动开启或关闭此功能。顾名思义，此功能能够使得在显存没有变化的时候不刷新屏幕，在显存变化的时候，只刷新有变化的对应页(PAGE),从而节省资源。
+    4. **动态可变区域刷新屏幕：** 这算是此项目的一个特色了。您可以手动开启或关闭此功能。顾名思义，此功能能够使得在显存没有变化的时候不刷新屏幕，在显存变化的时候，只刷新有变化的对应页最小区块,从而节省资源。
 ---
-此项目未完待续，作为OLED UI的补充篇
+
+## 目录
+- [实用函数介绍](#1-实用函数介绍)
+- [移植部署方式](#2-移植部署方式)
+
+---
+
+## 1. 实用函数介绍
+
+#### 1. `void OLED_Init(void);`
+**介绍：** 初始化OLED屏幕，在程序开始的时候调用一次即可。
+
+----
+#### 2. `void OLED_Update(void);`
+**介绍：** 刷新屏幕，将显存发送到屏幕
+
+**补充：** 在 `OLED_driver.c` 文件的头部有一个宏  `IF_ENABLE_DYNAMIC_REFRESH` ，用户可以配置这个宏。如果用户将其配置为 `false` ,则不开启动态刷新，配置为 `true` 则开启动态刷新。
+
+---
+#### 3. `void OLED_UpdateArea(int16_t X, int16_t Y, int16_t Width, int16_t Height);`
+**介绍：** 刷新屏幕，将显存发送到屏幕
+
+
+**参数：**
+- `X`：刷新区域的左上角横坐标
+- `Y`：刷新区域的左上角纵坐标
+- `Width`：刷新区域的宽度
+- `Height`：刷新区域的高度
+
+**补充：** 这个函数并不是精准刷新用户指定的区域，而是刷新最小的包含用户指定区域的页的最小区块。
+
+---
+#### 4. `void OLED_SetColorMode(bool colormode)`
+**介绍：** 设置屏幕的颜色模式
+
+**参数：**
+- `colormode`：`true` 为黑底白字，`false` 为白底黑字
+
+---
+#### 5. `void OLED_Brightness(int16_t Brightness);`
+**介绍：** 设置屏幕的亮度
+
+**参数：**
+- `Brightness`：亮度值，范围为0~255
+
+---
+#### 6. `bool OLED_IfChangedScreen(void);`
+**介绍：** 检测显存数组是否发生变化
+
+**返回值：** `true` 屏幕发生变化，`false` 屏幕未发生变化
+**补充：** 此函数用于上层程序计算帧率。如果上一次刷屏之后显存没有变化，则此函数返回 `false`，否则返回 `true`。
+
+---
+#### 7. `void OLED_DelayMs(uint32_t xms);`
+**介绍：** 就是一个普通的延时函数
+
+**参数：**
+- `xms`：延时时间，单位为毫秒
+
+---
+
+#### 8. `void OLED_Clear(void);`
+**介绍：** 清空显存
+
+---
+
+#### 9. `void OLED_ClearArea(int16_t X, int16_t Y, int16_t Width, int16_t Height);`
+**介绍：** 清空指定区域显存
+
+**参数：**
+- `X`：区域的左上角横坐标
+- `Y`：区域的左上角纵坐标
+- `Width`：区域的宽度
+- `Height`：区域的高度
+
+---
+
+#### 10. `void OLED_Reverse(void);`
+**介绍：** 将全屏显存数组取反
+
+---
+#### 11. `void OLED_ReverseArea(int16_t X, int16_t Y, int16_t Width, int16_t Height);`
+**介绍：** 将指定区域的显存数组取反
+
+**参数：**
+- `X`：区域的左上角横坐标
+- `Y`：区域的左上角纵坐标
+- `Width`：区域的宽度
+- `Height`：区域的高度
+
+---
+
+#### 12. `void OLED_ShowImage(int16_t X, int16_t Y, uint16_t Width, uint16_t Height, const uint8_t *Image);`
+**介绍：** 显示图片
+
+**参数：**
+- `X`：图片左上角横坐标
+- `Y`：图片左上角纵坐标
+- `Width`：图片宽度
+- `Height`：图片高度
+- `Image`：图片数组指针
+
+---
+
+#### 13. `void OLED_Printf(int16_t X, int16_t Y, uint8_t Font,const char *format, ...);`
+**介绍：** 格式化显示字符串
+**参数：**
+- `X`：字符串左上角横坐标
+- `Y`：字符串左上角纵坐标
+- `Font`：请使用预先定义的宏，他们的值就是字体的高:
+    - `OLED_FONT_8`  
+    - `OLED_FONT_12` 
+    - `OLED_FONT_16` 
+    - `OLED_FONT_20` 
+
+- `format`：格式化字符串，支持%d、%c、%s等格式，同样的，它也支持`\n`换行符。
+
+---
+
+#### 14. `void OLED_ShowImageArea(int16_t X_Area, int16_t Y_Area, int16_t AreaWidth, int16_t AreaHeight, int16_t X_Pic, int16_t Y_Pic, int16_t PictureWidth, int16_t PictureHeight, const uint8_t *Image);`
+**介绍：** 显示图片在指定区域
+
+**参数：**
+- `X_Area`：区域的左上角横坐标
+- `Y_Area`：区域的左上角纵坐标
+- `AreaWidth`：区域的宽度
+- `AreaHeight`：区域的高度
+- `X_Pic`：图片左上角横坐标
+- `Y_Pic`：图片左上角纵坐标
+- `PictureWidth`：图片宽度
+- `PictureHeight`：图片高度
+- `Image`：图片数组指针
+
+**补充：** 这个函数可以将图片显示在指定区域，如果图片超出区域，则会自动裁剪。你可以理解为在图片的上方生成一个矩形框，然后将图片显示在矩形框内，如果图片超出矩形框，则不显示。
+---
+
+#### 15. `void OLED_PrintfArea(int16_t RangeX,int16_t RangeY,int16_t RangeWidth,int16_t RangeHeight,int16_t X, int16_t Y, uint8_t Font, char *format, ...); `
+**介绍：** 格式化显示字符串在指定区域
+
+**参数：**
+- `RangeX`：区域的左上角横坐标
+- `RangeY`：区域的左上角纵坐标
+- `RangeWidth`：区域的宽度
+- `RangeHeight`：区域的高度
+- `X`：字符串左上角横坐标
+- `Y`：字符串左上角纵坐标
+- `Font`：请使用预先定义的宏，他们的值就是字体的高:
+    - `OLED_FONT_8`  
+    - `OLED_FONT_12` 
+    - `OLED_FONT_16` 
+    - `OLED_FONT_20` 
+
+- `format`：格式化字符串，支持%d、%c、%s等格式，同样的，它也支持`\n`换行符。
+
+**补充：** 这个函数可以将字符串显示在指定区域，如果字符串超出区域，则会自动裁剪。你可以理解为在字符串的上方生成一个矩形框，然后将字符串显示在矩形框内，如果字符串超出矩形框，则不显示。 
+
+---
+#### 16. `void OLED_DrawPoint(int16_t X, int16_t Y);`
+**介绍：** 画点
+
+**参数：**
+- `X`：点的横坐标
+- `Y`：点的纵坐标
+
+---
+
+#### 17. `uint8_t OLED_GetPoint(int16_t X, int16_t Y);`
+**介绍：** 获取点是否有值
+
+**参数：**
+- `X`：点的横坐标
+- `Y`：点的纵坐标
+
+**返回值：** `0` 点无值，`1` 点有值
+
+---
+
+#### 18. `void OLED_DrawLine(int16_t X0, int16_t Y0, int16_t X1, int16_t Y1);`
+**介绍：** 画线
+
+**参数：**
+- `X0`：线的起点横坐标
+- `Y0`：线的起点纵坐标
+- `X1`：线的终点横坐标
+- `Y1`：线的终点纵坐标
+
+---
+#### 19. `void OLED_DrawRectangle(int16_t X, int16_t Y, int16_t Width, int16_t Height, uint8_t IsFilled);`
+**介绍：** 画矩形
+
+**参数：**
+- `X`：矩形左上角横坐标
+- `Y`：矩形左上角纵坐标
+- `Width`：矩形宽度
+- `Height`：矩形高度
+- `IsFilled`：请使用宏，`OLED_FILLED` 填充矩形，`OLED_UNFILLED` 仅画边框
+---
+
+#### 20. `void OLED_DrawTriangle(int16_t X0, int16_t Y0, int16_t X1, int16_t Y1, int16_t X2, int16_t Y2, uint8_t IsFilled);`
+**介绍：** 画三角形
+
+**参数：**
+- `X0`：三角形第一个顶点横坐标
+- `Y0`：三角形第一个顶点纵坐标
+- `X1`：三角形第二个顶点横坐标
+- `Y1`：三角形第二个顶点纵坐标
+- `X2`：三角形第三个顶点横坐标
+- `Y2`：三角形第三个顶点纵坐标
+- `IsFilled`：请使用宏，`OLED_FILLED` 填充三角形，`OLED_UNFILLED` 仅画边框
+
+---
+
+#### 21. `void OLED_DrawCircle(int16_t X, int16_t Y, int16_t Radius, uint8_t IsFilled);`
+**介绍：** 画圆
+
+**参数：**
+- `X`：圆心横坐标
+- `Y`：圆心纵坐标
+- `Radius`：圆的半径
+- `IsFilled`：请使用宏，`OLED_FILLED` 填充圆，`OLED_UNFILLED` 仅画边框
+
+---
+
+#### 22. `void OLED_DrawEllipse(int16_t X, int16_t Y, int16_t A, int16_t B, uint8_t IsFilled);`
+**介绍：** 画椭圆
+
+**参数：**
+- `X`：椭圆中心横坐标
+- `Y`：椭圆中心纵坐标
+- `A`：椭圆长轴长度
+- `B`：椭圆短轴长度
+- `IsFilled`：请使用宏，`OLED_FILLED` 填充椭圆，`OLED_UNFILLED` 仅画边框
+
+---
+
+#### 23. `void OLED_DrawArc(int16_t X, int16_t Y, int16_t Radius, int16_t StartAngle, int16_t EndAngle, uint8_t IsFilled);`
+**介绍：** 画圆弧
+
+**参数：**
+- `X`：圆心横坐标
+- `Y`：圆心纵坐标
+- `Radius`：圆的半径
+- `StartAngle`：起始角度，单位为度
+- `EndAngle`：终止角度，单位为度
+- `IsFilled`：请使用宏，`OLED_FILLED` 填充圆弧，`OLED_UNFILLED` 仅画边框
+
+---
+
+#### 24. `void OLED_DrawRoundedRectangle(int16_t X, int16_t Y, int16_t Width, int16_t Height, int16_t Radius, uint8_t IsFilled);`
+**介绍：** 画圆角矩形
+
+**参数：**
+- `X`：矩形左上角横坐标
+- `Y`：矩形左上角纵坐标
+- `Width`：矩形宽度
+- `Height`：矩形高度
+- `Radius`：矩形圆角半径
+- `IsFilled`：请使用宏，`OLED_FILLED` 填充矩形，`OLED_UNFILLED` 仅画边框
+
+---
+
+## 2. 移植部署方式
+
+   | 文件名  | 描述 | 移植的时候是否需要修改 |
+   |-------|-----|------|
+   | `OLED_Driver.c`  | 底层驱动文件         |   需要    |
+   | `OLED_Driver.h`  | 底层驱动文件的头文件  |   需要    |
+   | `OLED_Fonts.c`   | 字库文件          |   不需要  |
+   | `OLED_Fonts.h`   | 字库文件的头文件  |   不需要  |
+   | `OLED.c`         | 应用层文件        |   不需要  |
+   | `OLED.h`         | 应用层文件的头文件 |   不需要  |
+
+#### 1. `OLED_Driver.h` 文件
+- 这个文件没啥要改的
+#### 2. `OLED_Driver.c` 文件
+- 修改屏幕像素的高度和宽度：
+    ```c
+    #define OLED_HEIGHT_DRIVER	        	(128)					//OLED像素的高度
+
+    #define OLED_WIDTH_DRIVER		    	(128)					//OLED像素的宽度 
+    ```
+    把他们修改成你实际的OLED的高度和宽度。他们在oled底层驱动当中起关键作用。
+- 修改有关SPI端口的宏定义或函数。例如在SPI的OLED_driver.c文件中，他们是这样的：
+    ```c
+    //使用宏定义，速度更快（寄存器方式）
+    #define OLED_SCL_Clr()  (GPIOB->BRR = GPIO_Pin_8)   // 复位 SCL (将     GPIOB 的 8 号引脚拉低)
+    #define OLED_SCL_Set()  (GPIOB->BSRR = GPIO_Pin_8)  // 置位 SCL (将     GPIOB 的 8 号引脚拉高)
+
+    #define OLED_SDA_Clr()  (GPIOB->BRR = GPIO_Pin_9)   // 复位 SDA (将     GPIOB 的 9 号引脚拉低)
+    #define OLED_SDA_Set()  (GPIOB->BSRR = GPIO_Pin_9)  // 置位 SDA (将     GPIOB 的 9 号引脚拉高)
+
+    #define OLED_RES_Clr()  (GPIOB->BRR = GPIO_Pin_5)   // 复位 RES (将     GPIOB 的 5 号引脚拉低)
+    #define OLED_RES_Set()  (GPIOB->BSRR = GPIO_Pin_5)  // 置位 RES (将     GPIOB 的 5 号引脚拉高)
+
+    #define OLED_DC_Clr()   (GPIOB->BRR = GPIO_Pin_6)   // 复位 DC (将  GPIOB 的 6 号引脚拉低)
+    #define OLED_DC_Set()   (GPIOB->BSRR = GPIO_Pin_6)  // 置位 DC (将  GPIOB 的 6 号引脚拉高)
+
+    #define OLED_CS_Clr()   (GPIOB->BRR = GPIO_Pin_7)   // 复位 CS (将  GPIOB 的 7 号引脚拉低)
+    #define OLED_CS_Set()   (GPIOB->BSRR = GPIO_Pin_7)  // 置位 CS (将  GPIOB 的 7 号引脚拉高)
+    ```
+    这些宏定义和函数是用来控制OLED的GPIO引脚的，根据你实际的OLED的引脚连接情况，修改这些宏定义和函数。
+
+- 修改有关OLED的初始化函数。例如在OLED_Driver.c文件中，请找到 `OLED_Init()` 函数，修改它，正确的初始化GPIO引脚，使它能够正确初始化你的OLED。
+
+- 修改`void OLED_DelayMs(uint32_t xms)` 这就是一个普通的延时函数。请在移植的时候正确地实现它。
+
+#### 3. `OLED.h` 文件
+- 修改OLED的高度和宽度，使得它与你实际的OLED的高度和宽度相匹配。
+    ```c
+    //使用宏定义的方式确定oled的横向像素与竖向像素
+    #define OLED_WIDTH						(128)					
+    #define OLED_HEIGHT 					(128)
+    ```
+#### 4. `OLED.c` 文件
+- 这个文件没啥要改的。
+
+#### 5. `OLED_Fonts.h` 文件
+- 正常情况下，这个文件不需要修改。如果你添加的其他图片的字库，请在这里添加图片数组的声明，使得他们能够被上层调用。例如：
+    ```c
+    /*图像数据声明*/
+    extern const uint8_t Arrow[];
+    ```
+#### 6. `OLED_Fonts.c` 文件
+- 正常情况下，这个文件不需要修改。如果你添加的其他图片的字库，请在这里添加图片数组的定义，例如：
+    ```c
+    const uint8_t Arrow[] = {
+    0x02,0x06,0x0E,0x0E,0x06,0x02,
+    };/*"指示箭头",0*/
+    ```
