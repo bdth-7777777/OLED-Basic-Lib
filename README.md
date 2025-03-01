@@ -1,5 +1,6 @@
 # **OLED Basic Lib**
-![alt text](<OLED Basic Lib-1.png>)
+![OLED Basic Lib-1](https://github.com/user-attachments/assets/95e1ce45-b45f-44ca-9525-2468d29b0386)
+
 ---
 > **介绍：**一个**轻量级**的OLED屏幕驱动库，支持**中英文混合**显示，支持**动态可变区域**和**动态自适应帧率**刷新屏幕。
 ---
@@ -409,11 +410,16 @@
 * 英文字母无需取模
 #### 2. 中文取模
 * 下载仓库，解压 `取模软件与辅助工具` 压缩包，运行 `PCtoLCD2002.exe` 程序。
-![alt text](image-1.png)
+![image-1](https://github.com/user-attachments/assets/47df19fa-8cf5-47d2-866f-1fa24dac09ca)
+
 * 点击设置，确保选项与下图一致（选择c51，然后点击确认按钮以保存设置）：
-![alt text](image-2.png)
+![image-2](https://github.com/user-attachments/assets/bc5cf8e5-806d-4b05-8b2f-bde34148b107)
+
+
 * 下图①处数据为字模的数据大小，②处为字模的字体大小。在输入框当中输入需要用到的字体，点击生成字模按钮。
-![alt text](image-3.png)
+
+![image-3](https://github.com/user-attachments/assets/aa4c1ed6-81a1-4a87-be28-682539231f9e)
+
 生成的字模是这样的：
     ```c
     {0x00,0x80,0x60,0xF8,0x07,0x40,0x20,0x18,0x0F,0x08,0xC8,0x08,0x08,0x28,0x18,0x00,0x01,0x00, 0x00,0xFF,0x00,0x10,0x0C,0x03,0x40,0x80,0x7F,0x00,0x01,0x06,0x18,0x00},/*"你",0*/
@@ -431,14 +437,20 @@
     格式正确的字模才会被正确处理。你也许会觉得手动改格式会有些麻烦。没关系，我们有自动化的脚本来帮助你完成这个工作。
 
     解压 `取模软件与辅助工具` 压缩包，运行 `OLED_UI字模格式修改器.exe` 程序。
-![alt text](image-4.png)
+
+![image-4](https://github.com/user-attachments/assets/f28605f1-1995-45a6-9850-bbfcdf7c0f53)
+
     将原始的字模数据复制到输入区域。点击转换，就可以获取到格式正确的字模数据。
 
 #### 3. 图片取模
 * 下载仓库，解压 `取模软件与辅助工具` 压缩包，运行 `Img2Lcd.exe` 程序，按照下图步骤操作并保存
-![alt text](image-5.png)
+
+![image-5](https://github.com/user-attachments/assets/3b39e9eb-de35-4153-ad33-4856dc34680e)
+
 * 再次打开 `Img2Lcd.exe` 程序，在 `模式` 选择图形模式，在 `文件` 打开刚才生成bmp格式的图片。
-![alt text](image-6.png)
+
+![image-6](https://github.com/user-attachments/assets/aaaf28b3-e09e-4297-97fb-4ca4ac460019)
+
 在此界面可以编辑图片，鼠标左键点亮像素，右键取消点亮像素。然后点击生成字模，复制生成的字模数据到 `OLED_Fonts.c` 文件中，并将其格式改为这样：
     ```c
     const uint8_t OLED_UI_LOGO[] = { 
