@@ -23,21 +23,21 @@
    | 屏幕类型与分辨率  | 通讯协议 |屏幕主控 | STM32f103cxt6 |ESP32 DEV MODULE|
    |-------|-----|------|----|----| 
    | OLED 72x40    |   SPI  | SSD1315  |   有例程    |   有例程    |
-   | OLED 72x40    |   IIC  | SSD1315  |   有例程    |   有例程    |
-   | OLED 128x32   |  IIC   | SSD1306  |   有例程    |   有例程    |
-   | OLED 128x32   |   SPI  | SSD1305  |   有例程    |   有例程    |
+   | OLED 72x40    |   IIC  | SSD1315  |   有例程    |   无例程    |
+   | OLED 128x32   |  IIC   | SSD1306  |   有例程    |   无例程    |
+   | OLED 128x32   |   SPI  | SSD1305  |   有例程    |   无例程    |
    | OLED 128x64   |   SPI  | SSD1306  |   有例程    |   有例程    |
-   | OLED 128x64   |  IIC   | SSD1306  |   有例程    |   有例程    |
+   | OLED 128x64   |  IIC   | SSD1306  |   有例程    |   无例程    |
    | OLED 128x64   |  SPI   | SH1106   |   有例程    |   有例程    |
    | OLED 128*128  |  SPI   | SH1107   |   有例程    |   有例程    |
-   | OLED 128*128  |  IIC   | SH1107   |   有例程    |   有例程    |
+   | OLED 128*128  |  IIC   | SH1107   |   有例程    |   无例程    |
    | OLED 128*160  |  SPI   | SH1107   |   有例程    |   有例程    |
 ### LCD屏幕
    | 屏幕类型与分辨率  | 通讯协议 |屏幕主控 | STM32f103cxt6 |ESP32 DEV MODULE|
    |-------|-----|------|----|----| 
    | LCD 48x64（淘宝2.2元透明LCD）[链接](https://e.tb.cn/h.TFodxVo2dQGE5Ax?tk=OXwlePW9FBr)    |   SPI  | ST7565  |   有例程    |   有例程    |
-   | LCD 128x64 （淘宝2.2元LCD）[链接](https://e.tb.cn/h.TFjmrZ7lSpX4zYu?tk=LzRqePWPPx6)      |   SPI  | ST7565  |   有例程    |   有例程    |
-   | LCD 128x64 （淘宝1元LCD）[链接](https://e.tb.cn/h.TFjNBltaNEq0UXE?tk=bHhfePWlHvE)        |   SPI  | UC1701C  |   有例程    |   有例程    |
+   | LCD 128x64 （淘宝2.2元LCD）[链接](https://e.tb.cn/h.TFjmrZ7lSpX4zYu?tk=LzRqePWPPx6)      |   SPI  | ST7565  |   有例程    |   无例程    |
+   | LCD 128x64 （淘宝1元LCD）[链接](https://e.tb.cn/h.TFjNBltaNEq0UXE?tk=bHhfePWlHvE)        |   SPI  | UC1701C  |   有例程    |   无例程    |
 ---
 ## 目录
 - [实用函数介绍](#1-实用函数介绍)
